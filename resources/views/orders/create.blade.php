@@ -8,7 +8,7 @@
             @csrf
             <!-- Form appears first in DOM, so it shows on the right in RTL -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
+
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Client Details -->
                     <div class="glass-card p-6 md:p-8">
@@ -50,14 +50,14 @@
                                 <input type="text" name="phone" x-model="clientPhone"
                                     class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition">
                             </div>
-                            
+
                             <div class="md:col-span-2">
                                 <label class="inline-flex items-center cursor-pointer bg-orange-50 px-4 py-3 rounded-xl border border-orange-100 hover:bg-orange-100 transition w-full sm:w-auto">
                                     <input type="checkbox" name="is_traveler" value="1" x-model="isTraveler" class="w-5 h-5 text-orange-500 bg-white border-gray-300 rounded focus:ring-orange-400 focus:ring-2 transition">
                                     <span class="ml-2 text-sm font-bold text-orange-700 mr-2 flex items-center gap-2"><span>✈️</span> العميلة من سفر (استعجال/من خارج المحافظة)</span>
                                 </label>
                             </div>
-                            
+
                             <div x-show="isNewClient" x-transition class="md:col-span-2 bg-blue-50/50 p-4 rounded-xl border border-dashed border-blue-200 flex items-center gap-4">
                                 <div class="text-sm text-gray-600 flex-1">
                                     <p class="font-bold text-blue-800 mb-1">عميلة جديدة!</p>
@@ -105,7 +105,7 @@
                                     + إضافة مقاس إضافي
                                 </button>
                             </div>
-                            
+
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 <template x-for="(m, index) in measurements" :key="'meas_'+index">
                                     <div class="relative group">
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">تاريخ الاستلام (البروفة)</label>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">تاريخ الاستلام</label>
                                 <input type="date" name="order_date" required value="{{ date('Y-m-d') }}"
                                     class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition">
                             </div>
@@ -227,7 +227,7 @@
                 clients: @json($clients),
                 filteredClients: [],
                 showSuggestions: false,
-                
+
                 selectedCategory: '',
                 measurements: [],
                 imagePreview: null,
