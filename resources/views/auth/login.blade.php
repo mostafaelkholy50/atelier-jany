@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>تسجيل الدخول — Jenny's Atelier</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
@@ -598,16 +599,8 @@
                     @enderror
                 </div>
 
-                <!-- Remember + Forgot -->
-                <div class="field-row">
-                    <label class="remember-label">
-                        <input type="checkbox" name="remember">
-                        تذكريني
-                    </label>
-                    @if (Route::has('password.request'))
-                        <a class="forgot-link" href="{{ route('password.request') }}">نسيت كلمة المرور؟</a>
-                    @endif
-                </div>
+                <!-- Always Remember User Securely -->
+                <input type="hidden" name="remember" value="on">
 
                 <!-- Submit -->
                 <button type="submit" class="btn-login">دخول ✦</button>

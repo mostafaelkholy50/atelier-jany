@@ -4,36 +4,36 @@
     <div class="py-6 space-y-8">
 
         {{-- ===== Stats Row ===== --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">📋</div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold">إجمالي الطلبات</p>
-                    <h3 class="text-2xl font-black text-blue-900">{{ $totalOrders }}</h3>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="glass-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">📋</div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-bold truncate">إجمالي الطلبات</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-blue-900">{{ $totalOrders }}</h3>
                 </div>
             </div>
-            <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">👗</div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold">العميلات</p>
-                    <h3 class="text-2xl font-black text-blue-900">{{ $totalClients }}</h3>
+            <div class="glass-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">👗</div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-bold truncate">العميلات</p>
+                    <h3 class="text-lg sm:text-2xl font-black text-blue-900">{{ $totalClients }}</h3>
                 </div>
             </div>
-            <div class="glass-card p-5 flex items-center gap-4
+            <div class="glass-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4
                         {{ $overdueOrders->count() > 0 ? 'border-red-200 bg-red-50/60' : '' }}">
-                <div class="w-12 h-12 {{ $overdueOrders->count() > 0 ? 'bg-red-100' : 'bg-green-100' }} rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 {{ $overdueOrders->count() > 0 ? 'bg-red-100' : 'bg-green-100' }} rounded-2xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">
                     {{ $overdueOrders->count() > 0 ? '⏰' : '✅' }}
                 </div>
-                <div>
-                    <p class="text-xs {{ $overdueOrders->count() > 0 ? 'text-red-500' : 'text-gray-500' }} font-bold">متأخرة</p>
-                    <h3 class="text-2xl font-black {{ $overdueOrders->count() > 0 ? 'text-red-600' : 'text-green-700' }}">{{ $overdueOrders->count() }}</h3>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] sm:text-xs {{ $overdueOrders->count() > 0 ? 'text-red-500' : 'text-gray-500' }} font-bold truncate">متأخرة</p>
+                    <h3 class="text-lg sm:text-2xl font-black {{ $overdueOrders->count() > 0 ? 'text-red-600' : 'text-green-700' }}">{{ $overdueOrders->count() }}</h3>
                 </div>
             </div>
-            <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">💰</div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold">إجمالي الإيرادات</p>
-                    <h3 class="text-xl font-black text-blue-900">{{ number_format($totalRevenue) }} <span class="text-sm font-bold">ج.م</span></h3>
+            <div class="glass-card p-4 sm:p-5 flex items-center gap-3 sm:gap-4">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">💰</div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-bold truncate">الإيرادات</p>
+                    <h3 class="text-base sm:text-xl font-black text-blue-900 truncate">{{ number_format($totalRevenue) }} <span class="text-[10px] sm:text-sm font-bold">ج</span></h3>
                 </div>
             </div>
         </div>
@@ -162,11 +162,11 @@
         {{-- ===== Next 5 Pending Orders ===== --}}
         @if($pendingOrders->count() > 0)
         <div class="glass-card overflow-hidden">
-            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="font-black text-blue-900 flex items-center gap-2">🔄 طلبات جارية (أقرب مواعيد)</h3>
+            <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2">
+                <h3 class="font-black text-sm md:text-base text-blue-900 flex items-center gap-2">🔄 طلبات جارية (أقرب مواعيد)</h3>
                 <a href="{{ route('orders.index') }}" class="text-xs text-blue-600 font-bold hover:underline">عرض الكل</a>
             </div>
-            <div class="hidden md:block overflow-x-auto">
+            <div class="hidden lg:block overflow-x-auto">
                 <table class="w-full text-right">
                     <thead class="bg-gray-50/50 text-xs text-gray-500 font-bold border-b border-gray-100">
                         <tr>
@@ -198,7 +198,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="md:hidden divide-y divide-gray-50">
+            <div class="lg:hidden divide-y divide-gray-50">
                 @foreach($pendingOrders as $order)
                     <a href="{{ route('orders.show', $order) }}" class="flex items-center gap-3 px-4 py-3 hover:bg-blue-50/20 transition">
                         <div class="font-bold text-blue-700 text-sm">#{{ $order->order_code }}</div>
