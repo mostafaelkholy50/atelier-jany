@@ -11,10 +11,10 @@
     </x-slot>
 
     <div class="py-6">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
                             
             <!-- Middle/Right Column: Details -->
-            <div class="md:col-span-8 space-y-6">
+            <div class="lg:col-span-8 space-y-6">
                 <!-- Client Info -->
                 <div class="glass-card p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-6 hover:shadow-md transition">
                     @if($order->client->image)
@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Order Info -->
                     <div class="glass-card p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4 relative overflow-hidden">
                         <div class="absolute -left-6 -top-6 text-6xl opacity-5">👗</div>
@@ -121,7 +121,7 @@
             </div>
             
             <!-- Left Column: Image & Financials -->
-            <div class="md:col-span-4 space-y-6">
+            <div class="lg:col-span-4 space-y-6 flex flex-col">
                 <!-- Image -->
                 <div class="glass-card p-3 rounded-2xl border border-gray-100 shadow-sm h-80 lg:h-96 w-full relative group overflow-hidden bg-white">
                     @if($order->design_image)

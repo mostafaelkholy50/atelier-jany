@@ -17,7 +17,7 @@
                 <h3 class="font-black text-sm flex items-center gap-2">⏰ طلبات متأخرة — {{ $overdueOrders->count() }}</h3>
                 <a href="{{ route('orders.index') }}" class="text-xs bg-white/20 hover:bg-white/40 px-3 py-1 rounded-lg font-bold transition">إدارة الطلبات</a>
             </div>
-            <div class="divide-y divide-red-50">
+            <div class="divide-y divide-red-50 max-h-[350px] overflow-y-auto">
                 @foreach($overdueOrders as $order)
                 <a href="{{ route('orders.show', $order) }}" class="flex items-center gap-3 px-5 py-3 hover:bg-red-50/40 transition">
                     @if($order->client->image)

@@ -66,7 +66,7 @@
                 <div class="glass-card p-6 min-h-[500px]">
                     <h3 class="font-bold text-gray-800 mb-6 text-lg">الموديلات المسجلة بالمكتبة</h3>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">
                         <template x-for="category in categoriesList" :key="category.id">
                             <div class="bg-white p-5 rounded-2xl border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition duration-300 relative group flex flex-col h-full overflow-hidden" :class="editId === category.id ? 'ring-2 ring-blue-400 bg-blue-50/30' : ''">
                                 <!-- Background Decoration -->

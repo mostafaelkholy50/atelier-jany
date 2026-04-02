@@ -155,8 +155,8 @@
                 </div>
             @else
                 {{-- Desktop Table --}}
-                <div class="hidden md:block">
-                    <table class="w-full text-right">
+                <div class="hidden lg:block overflow-x-auto">
+                    <table class="w-full text-right min-w-[600px]">
                         <thead class="bg-blue-50/50 text-blue-900 text-xs font-bold border-b border-blue-100">
                             <tr>
                                 <th class="py-3 px-4">الكود</th>
@@ -212,8 +212,8 @@
                     </table>
                 </div>
 
-                {{-- Mobile Cards --}}
-                <div class="md:hidden divide-y divide-gray-50">
+                {{-- Mobile & Tablet Cards --}}
+                <div class="lg:hidden divide-y divide-gray-50">
                     @foreach($client->orders->sortByDesc('created_at') as $order)
                         @php
                             $isOverdue   = $order->delivery_date && \Carbon\Carbon::parse($order->delivery_date)->isPast() && $order->status !== 'completed';

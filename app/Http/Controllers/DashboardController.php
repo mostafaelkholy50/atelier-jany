@@ -9,26 +9,29 @@ use Illuminate\Support\Carbon;
 class DashboardController extends Controller
 {
     public function index() {
-        $today       = Carbon::today();
-        $twoDaysAhead = Carbon::today()->addDays(2);
+        $todayString = Carbon::today()->toDateString();
+        $twoDaysAheadString = Carbon::today()->addDays(2)->toDateString();
 
         // Overdue: past delivery date, not completed
         $overdueOrders = Order::with(['client', 'itemCategory'])
             ->where('status', '!=', 'completed')
-            ->whereDate('delivery_date', '<', $today)
+            ->whereNotNull('delivery_date')
+            ->where('delivery_date', '<', $todayString)
             ->orderBy('delivery_date')
             ->get();
 
         // Today's deliveries
         $deliveriesToday = Order::with(['client', 'itemCategory'])
-            ->whereDate('delivery_date', $today)
+            ->whereNotNull('delivery_date')
+            ->where('delivery_date', 'like', $todayString . '%')
             ->where('status', '!=', 'completed')
             ->get();
 
         // Upcoming (tomorrow + day after)
         $upcomingDeliveries = Order::with(['client', 'itemCategory'])
-            ->whereDate('delivery_date', '>', $today)
-            ->whereDate('delivery_date', '<=', $twoDaysAhead)
+            ->whereNotNull('delivery_date')
+            ->where('delivery_date', '>', $todayString . ' 23:59:59')
+            ->where('delivery_date', '<=', $twoDaysAheadString . ' 23:59:59')
             ->where('status', '!=', 'completed')
             ->orderBy('delivery_date')
             ->get();

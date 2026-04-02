@@ -16,21 +16,24 @@ class AppointmentController extends Controller
         $weekStart = \Carbon\Carbon::today()->addWeeks($weekOffset);
         $weekEnd   = $weekStart->copy()->addDays(6)->endOfDay();
 
-        // Fetch all active orders to bypass SQLite date casting bugs, then filter in memory
-        $activeOrders = Order::with(['client', 'itemCategory'])
+        $weekStartString = $weekStart->toDateString();
+        $weekEndString   = $weekEnd->toDateString();
+        $todayString     = \Carbon\Carbon::today()->toDateString();
+
+        $weekOrders = Order::with(['client', 'itemCategory'])
             ->where('status', '!=', 'completed')
             ->whereNotNull('delivery_date')
+            ->where('delivery_date', '>=', $weekStartString)
+            ->where('delivery_date', '<=', $weekEndString . ' 23:59:59')
             ->orderBy('delivery_date')
             ->get();
 
-        $weekOrders = $activeOrders->filter(function ($o) use ($weekStart, $weekEnd) {
-            $d = \Carbon\Carbon::parse($o->delivery_date)->startOfDay();
-            return $d->between($weekStart->copy()->startOfDay(), $weekEnd->copy()->endOfDay());
-        });
-
-        $overdueOrders = $activeOrders->filter(function ($o) {
-            return \Carbon\Carbon::parse($o->delivery_date)->endOfDay()->isPast();
-        });
+        $overdueOrders = Order::with(['client', 'itemCategory'])
+            ->where('status', '!=', 'completed')
+            ->whereNotNull('delivery_date')
+            ->where('delivery_date', '<', $todayString)
+            ->orderBy('delivery_date')
+            ->get();
 
         return view('appointments.index', compact(
             'weekOrders', 'overdueOrders', 'weekStart', 'weekEnd', 'weekOffset'

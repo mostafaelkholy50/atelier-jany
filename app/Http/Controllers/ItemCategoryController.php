@@ -25,6 +25,8 @@ class ItemCategoryController extends Controller
             'default_measurements' => $validated['measurements'] ?? [],
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget('item_categories_all');
+
         if ($request->wantsJson()) {
             return response()->json($category);
         }
@@ -43,6 +45,8 @@ class ItemCategoryController extends Controller
             'default_measurements' => $validated['measurements'] ?? [],
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget('item_categories_all');
+
         if ($request->wantsJson()) {
             return response()->json($category);
         }
@@ -52,6 +56,9 @@ class ItemCategoryController extends Controller
     public function destroy(ItemCategory $category)
     {
         $category->delete();
+        
+        \Illuminate\Support\Facades\Cache::forget('item_categories_all');
+        
         if (request()->wantsJson()) {
             return response()->json(['success' => true]);
         }

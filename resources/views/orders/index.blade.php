@@ -1,21 +1,37 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
-            <span class="font-bold text-xl text-blue-900 flex items-center gap-2"><span>📋</span> إدارة الطلبات</span>
-            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto mt-2 md:mt-0">
-                <form id="searchForm" method="GET" action="{{ route('orders.index') }}" class="w-full sm:flex-1 md:w-64">
+        <!-- Desktop Header -->
+        <div class="hidden lg:flex justify-between items-center w-full gap-4">
+            <span class="font-black text-2xl text-blue-900 flex items-center gap-3">
+                <span class="bg-blue-100 p-2 rounded-xl">📋</span> إدارة الطلبات
+            </span>
+            <div class="flex items-center gap-4">
+                <form id="searchForm" method="GET" action="{{ route('orders.index') }}" class="w-80">
                     <div class="relative">
-                        <input type="text" id="searchInput" name="search" value="{{ request('search') }}" placeholder="بحث بالاسم أو الكود..." class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition pl-10 h-10 text-sm shadow-sm" autocomplete="off">
-                        <span id="searchIcon" class="absolute left-3 top-2.5 opacity-50 pointer-events-none">🔍</span>
-                        <span id="searchSpinner" class="absolute left-3 top-2.5 hidden">
+                        <input type="text" id="searchInput" name="search" value="{{ request('search') }}" placeholder="بحث بالاسم أو الكود..." class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-11 text-sm shadow-sm h-12 font-bold" autocomplete="off">
+                        <span id="searchIcon" class="absolute left-4 top-3.5 opacity-50 pointer-events-none">🔍</span>
+                        <span id="searchSpinner" class="absolute left-4 top-3.5 hidden">
                             <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                         </span>
                     </div>
                 </form>
-                <a href="{{ route('orders.create') }}" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-blue-200 whitespace-nowrap flex items-center justify-center">
-                    + إضافة طلب
+                <a href="{{ route('orders.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-black transition shadow-lg shadow-blue-200 whitespace-nowrap flex items-center justify-center gap-2">
+                    <span class="text-lg leading-none">➕</span> إضافة طلب جديد
                 </a>
             </div>
+        </div>
+
+        <!-- Mobile & Tablet Header -->
+        <div class="flex lg:hidden justify-between items-center w-full gap-3">
+            <form id="searchFormMobile" method="GET" action="{{ route('orders.index') }}" class="flex-1">
+                <div class="relative">
+                    <input type="text" id="searchMobile" name="search" value="{{ request('search') }}" placeholder="بحث عن طلب..." class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-10 text-base shadow-sm h-12 font-bold" autocomplete="off">
+                    <span class="absolute left-3 top-3.5 opacity-50">🔍</span>
+                </div>
+            </form>
+            <a href="{{ route('orders.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white h-12 w-12 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] flex items-center justify-center shrink-0 transition active:scale-95">
+                <span class="text-2xl leading-none">➕</span>
+            </a>
         </div>
     </x-slot>
 
@@ -146,8 +162,8 @@
                     </table>
                 </div>
 
-                <!-- Mobile & Tablet Cards View -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
+                <!-- Mobile & Tablet Cards View (1 Column Always for breathing room) -->
+                <div class="grid grid-cols-1 lg:hidden gap-5 w-full">
                     @foreach ($orders as $order)
                         <div class="border rounded-2xl p-4 shadow-sm relative {{ $cardBg }}" x-data="orderRow({{ $order->id }}, '{{ $order->status }}', {{ $order->is_fully_paid ? 'true' : 'false' }}, {{ $order->total_price ?? 0 }}, {{ $order->deposit ?? 0 }})">
                             <div class="flex justify-between items-start mb-3 border-b pb-3 {{ $isOverdue ? 'border-red-100' : ($isCompleted ? 'border-green-100' : 'border-gray-50') }}">
@@ -250,66 +266,65 @@
     <script>
         // ============== LIVE SEARCH (AJAX + Alpine reinit) ==============
         (function() {
-            const input = document.getElementById('searchInput');
-            const icon  = document.getElementById('searchIcon');
-            const spin  = document.getElementById('searchSpinner');
-            if (!input) return;
+            // Attach to both desktop and mobile forms
+            const inputs = [document.getElementById('searchInput'), document.getElementById('searchMobile')];
+            
+            inputs.forEach(input => {
+                if (!input) return;
+                
+                let timer;
+                input.addEventListener('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        const val = input.value.trim();
+                        const url = new URL(window.location.href);
 
-            let timer;
-            input.addEventListener('input', function() {
-                clearTimeout(timer);
-                timer = setTimeout(function() {
-                    const val = input.value.trim();
-                    const url = new URL(window.location.href);
-
-                    if (val === '') {
-                        url.searchParams.delete('search');
-                    } else {
-                        url.searchParams.set('search', val);
-                    }
-                    url.searchParams.delete('page');
-
-                    // Show spinner
-                    if (icon) icon.classList.add('hidden');
-                    if (spin) spin.classList.remove('hidden');
-
-                    fetch(url.toString(), {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(r => r.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const newContainer = doc.getElementById('resultsContainer');
-                        const oldContainer = document.getElementById('resultsContainer');
-
-                        if (newContainer && oldContainer) {
-                            // Destroy existing Alpine components inside old container
-                            oldContainer.querySelectorAll('[x-data]').forEach(el => {
-                                if (el._x_dataStack) {
-                                    try { Alpine.destroyTree(el); } catch(e) {}
-                                }
-                            });
-
-                            oldContainer.innerHTML = newContainer.innerHTML;
-
-                            // Re-initialize Alpine on new content
-                            Alpine.initTree(oldContainer);
+                        if (val === '') {
+                            url.searchParams.delete('search');
+                        } else {
+                            url.searchParams.set('search', val);
                         }
+                        url.searchParams.delete('page');
 
-                        // Update browser URL without reload
-                        window.history.pushState({}, '', url.toString());
+                        // Show spinner logic (on desktop)
+                        const icon = document.getElementById('searchIcon');
+                        const spin = document.getElementById('searchSpinner');
+                        if (icon) icon.classList.add('hidden');
+                        if (spin) spin.classList.remove('hidden');
 
-                        // Restore icon
-                        if (icon) icon.classList.remove('hidden');
-                        if (spin) spin.classList.add('hidden');
-                    })
-                    .catch(() => {
-                        if (icon) icon.classList.remove('hidden');
-                        if (spin) spin.classList.add('hidden');
-                    });
+                        fetch(url.toString(), {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(r => r.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContainer = doc.getElementById('resultsContainer');
+                            const oldContainer = document.getElementById('resultsContainer');
 
-                }, 400);
+                            if (newContainer && oldContainer) {
+                                oldContainer.querySelectorAll('[x-data]').forEach(el => {
+                                    if (el._x_dataStack) {
+                                        try { Alpine.destroyTree(el); } catch(e) {}
+                                    }
+                                });
+
+                                oldContainer.innerHTML = newContainer.innerHTML;
+                                Alpine.initTree(oldContainer);
+                            }
+
+                            window.history.pushState({}, '', url.toString());
+
+                            if (icon) icon.classList.remove('hidden');
+                            if (spin) spin.classList.add('hidden');
+                        })
+                        .catch(() => {
+                            if (icon) icon.classList.remove('hidden');
+                            if (spin) spin.classList.add('hidden');
+                        });
+
+                    }, 400);
+                });
             });
         })();
         // ============== END LIVE SEARCH ==============

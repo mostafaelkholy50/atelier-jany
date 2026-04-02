@@ -1,23 +1,39 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4">
-            <span class="font-bold text-xl text-blue-900 flex items-center gap-2"><span>👗</span> العميلات</span>
-            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto mt-2 md:mt-0">
-                <form method="GET" action="{{ route('clients.index') }}" class="w-full sm:flex-1 md:w-64">
+        <!-- Desktop Header -->
+        <div class="hidden lg:flex justify-between items-center w-full gap-4">
+            <span class="font-black text-2xl text-blue-900 flex items-center gap-3">
+                <span class="bg-blue-100 p-2 rounded-xl">👗</span> العميلات
+            </span>
+            <div class="flex items-center gap-4">
+                <form method="GET" action="{{ route('clients.index') }}" class="w-80">
                     <div class="relative">
                         <input type="text" id="clientSearchInput" name="search" value="{{ request('search') }}"
                             placeholder="بحث بالاسم أو التليفون..."
-                            class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition pl-10 h-10 text-sm shadow-sm" autocomplete="off">
-                        <span id="clientSearchIcon" class="absolute left-3 top-2.5 opacity-50 pointer-events-none">🔍</span>
-                        <span id="clientSearchSpinner" class="absolute left-3 top-2.5 hidden">
+                            class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-11 text-sm shadow-sm h-12 font-bold" autocomplete="off">
+                        <span id="clientSearchIcon" class="absolute left-4 top-3.5 opacity-50 pointer-events-none">🔍</span>
+                        <span id="clientSearchSpinner" class="absolute left-4 top-3.5 hidden">
                             <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                         </span>
                     </div>
                 </form>
-                <a href="{{ route('clients.create') }}" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition shadow-lg shadow-blue-200 whitespace-nowrap flex items-center justify-center">
-                    + إضافة عميلة
+                <a href="{{ route('clients.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl text-sm font-black transition shadow-lg shadow-blue-200 whitespace-nowrap flex items-center justify-center gap-2">
+                    <span class="text-lg leading-none">➕</span> إضافة عميلة
                 </a>
             </div>
+        </div>
+
+        <!-- Mobile & Tablet Header -->
+        <div class="flex lg:hidden justify-between items-center w-full gap-3">
+            <form id="searchFormMobile" method="GET" action="{{ route('clients.index') }}" class="flex-1">
+                <div class="relative">
+                    <input type="text" id="clientSearchMobile" name="search" value="{{ request('search') }}" placeholder="بحث عن عميلة..." class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-10 text-base shadow-sm h-12 font-bold" autocomplete="off">
+                    <span class="absolute left-3 top-3.5 opacity-50">🔍</span>
+                </div>
+            </form>
+            <a href="{{ route('clients.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white h-12 w-12 rounded-xl shadow-[0_4px_15px_rgba(37,99,235,0.3)] flex items-center justify-center shrink-0 transition active:scale-95">
+                <span class="text-2xl leading-none">➕</span>
+            </a>
         </div>
     </x-slot>
 
@@ -47,7 +63,7 @@
                 </a>
             </div>
         @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5 w-full">
                 @foreach($clients as $client)
                     @php
                         $hasOverdue = $client->orders->contains(fn($o) =>
@@ -118,23 +134,27 @@
 
     <script>
         (function() {
-            const input = document.getElementById('clientSearchInput');
-            const icon  = document.getElementById('clientSearchIcon');
-            const spin  = document.getElementById('clientSearchSpinner');
-            if (!input) return;
-            let timer;
-            input.addEventListener('input', function() {
-                clearTimeout(timer);
-                timer = setTimeout(function() {
-                    const val = input.value.trim();
-                    const url = new URL(window.location.href);
-                    if (val === '') { url.searchParams.delete('search'); }
-                    else { url.searchParams.set('search', val); }
-                    url.searchParams.delete('page');
-                    if (icon) icon.classList.add('hidden');
-                    if (spin) spin.classList.remove('hidden');
-                    window.location.href = url.toString();
-                }, 500);
+            const inputs = [document.getElementById('clientSearchInput'), document.getElementById('clientSearchMobile')];
+            inputs.forEach(input => {
+                if (!input) return;
+                let timer;
+                input.addEventListener('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        const val = input.value.trim();
+                        const url = new URL(window.location.href);
+                        if (val === '') { url.searchParams.delete('search'); }
+                        else { url.searchParams.set('search', val); }
+                        url.searchParams.delete('page');
+                        
+                        const icon  = document.getElementById('clientSearchIcon');
+                        const spin  = document.getElementById('clientSearchSpinner');
+                        if (icon) icon.classList.add('hidden');
+                        if (spin) spin.classList.remove('hidden');
+                        
+                        window.location.href = url.toString();
+                    }, 600);
+                });
             });
         })();
     </script>

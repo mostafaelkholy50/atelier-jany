@@ -26,8 +26,8 @@ class OrderController extends Controller
 
     public function create()
     {
-        $clients = \App\Models\Client::all();
-        $categories = \App\Models\ItemCategory::all();
+        $clients = \App\Models\Client::select('id', 'name', 'phone', 'is_traveler', 'image')->get();
+        $categories = \Illuminate\Support\Facades\Cache::remember('item_categories_all', 86400, fn() => \App\Models\ItemCategory::all());
         return view('orders.create', compact('clients', 'categories'));
     }
 
@@ -38,20 +38,28 @@ class OrderController extends Controller
             'phone' => 'nullable|string|max:20',
             'is_traveler' => 'boolean',
             'client_image' => 'nullable|image|max:2048',
-            'item_category_id' => 'required|exists:item_categories,id', // updated key
-            'fabric_color' => 'nullable|string',
-            'measurements' => 'nullable|array',
-            'design_image' => 'nullable|image|max:2048',
-            'total_price' => 'required|numeric',
-            'deposit' => 'nullable|numeric', // updated
-            'order_date' => 'required|date', // added
+            'items' => 'required|array|min:1',
+            'items.*.item_category_id' => 'required|exists:item_categories,id',
+            'items.*.fabric_color' => 'nullable|string',
+            'items.*.measurements' => 'nullable|array',
+            'items.*.design_image' => 'nullable|image|max:2048',
+            'items.*.total_price' => 'required|numeric',
+            'items.*.deposit' => 'nullable|numeric',
+            'order_date' => 'required|date',
             'delivery_date' => 'required|date',
         ]);
 
-        $client = Client::firstOrCreate(
-            ['phone' => $validated['phone']],
-            ['name' => $validated['name']]
-        );
+        if (!empty($validated['phone'])) {
+            $client = Client::firstOrCreate(
+                ['phone' => $validated['phone']],
+                ['name' => $validated['name']]
+            );
+        } else {
+            $client = Client::firstOrCreate(
+                ['name' => $validated['name']]
+            );
+        }
+        
         $client->is_traveler = $request->boolean('is_traveler');
         $client->save();
 
@@ -60,30 +68,32 @@ class OrderController extends Controller
             $client->update(['image' => $clientImage]);
         }
 
-        $orderCode = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-        while (Order::where('order_code', $orderCode)->exists()) {
+        foreach ($request->items as $index => $itemData) {
             $orderCode = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-        }
+            while (Order::where('order_code', $orderCode)->exists()) {
+                $orderCode = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            }
 
-        $designImage = null;
-        if ($request->hasFile('design_image')) {
-            $designImage = $request->file('design_image')->store('designs', 'public');
-        }
+            $designImage = null;
+            if ($request->hasFile("items.{$index}.design_image")) {
+                $designImage = $request->file("items.{$index}.design_image")->store('designs', 'public');
+            }
 
-        Order::create([
-            'client_id' => $client->id,
-            'order_code' => $orderCode,
-            'item_category_id' => $validated['item_category_id'],
-            'fabric_color' => $validated['fabric_color'],
-            'measurements' => $validated['measurements'],
-            'design_image' => $designImage,
-            'total_price' => $validated['total_price'],
-            'deposit' => $validated['deposit'] ?? 0,
-            'is_fully_paid' => $validated['total_price'] <= ($validated['deposit'] ?? 0),
-            'order_date' => $validated['order_date'],
-            'delivery_date' => $validated['delivery_date'],
-            'status' => 'pending',
-        ]);
+            Order::create([
+                'client_id' => $client->id,
+                'order_code' => $orderCode,
+                'item_category_id' => $itemData['item_category_id'],
+                'fabric_color' => $itemData['fabric_color'] ?? null,
+                'measurements' => $itemData['measurements'] ?? null,
+                'design_image' => $designImage,
+                'total_price' => $itemData['total_price'],
+                'deposit' => $itemData['deposit'] ?? 0,
+                'is_fully_paid' => $itemData['total_price'] <= ($itemData['deposit'] ?? 0),
+                'order_date' => $validated['order_date'],
+                'delivery_date' => $validated['delivery_date'],
+                'status' => 'pending',
+            ]);
+        }
 
         return redirect()->route('orders.index');
     }
@@ -97,8 +107,8 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $order->load(['client', 'itemCategory']);
-        $clients = \App\Models\Client::all();
-        $categories = \App\Models\ItemCategory::all();
+        $clients = \App\Models\Client::select('id', 'name', 'phone', 'is_traveler', 'image')->get();
+        $categories = \Illuminate\Support\Facades\Cache::remember('item_categories_all', 86400, fn() => \App\Models\ItemCategory::all());
         return view('orders.edit', compact('order', 'clients', 'categories'));
     }
 
