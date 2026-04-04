@@ -68,8 +68,14 @@
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-2">لون القماش والتفاصيل</label>
                                     <input type="text" name="fabric_color" value="{{ $order->fabric_color }}"
-                                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition shadow-sm"
+                                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition shadow-sm bg-white"
                                         placeholder="مثلاً: كحلي، أحمر جبردين...">
+                                </div>
+                                <div class="lg:col-span-2 mt-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">ملاحظات إضافية (اختياري)</label>
+                                    <textarea name="notes" rows="3"
+                                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition shadow-sm focus:bg-white bg-gray-50/50 text-gray-800"
+                                        placeholder="أي ملاحظات إضافية بخصوص القطعة...">{{ $order->notes }}</textarea>
                                 </div>
                             </div>
                         </div>

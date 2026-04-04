@@ -18,7 +18,8 @@ class Order extends Model
         'is_fully_paid',
         'status',
         'order_date',
-        'delivery_date'
+        'delivery_date',
+        'notes',
     ];
 
     protected $casts = [

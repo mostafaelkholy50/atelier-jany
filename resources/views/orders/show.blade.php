@@ -93,6 +93,19 @@
                     </div>
                 </div>
 
+                @if($order->notes)
+                <!-- Notes -->
+                <div class="glass-card p-6 md:p-8 rounded-2xl border border-yellow-200 shadow-sm relative overflow-hidden bg-gradient-to-r from-yellow-50/50 to-orange-50/50">
+                    <div class="absolute -left-6 -bottom-6 text-7xl opacity-10">📝</div>
+                    <h4 class="font-bold text-yellow-900 mb-4 text-lg relative z-10 flex items-center gap-3">
+                        <span class="bg-yellow-200 text-yellow-800 p-2 rounded-xl text-xl shadow-sm">📝</span> ملاحظات إضافية
+                    </h4>
+                    <div class="relative z-10 bg-white p-4 rounded-xl border border-yellow-100 shadow-sm">
+                        <p class="text-gray-800 font-medium leading-relaxed whitespace-pre-line">{{ $order->notes }}</p>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Measurements -->
                 <div class="glass-card bg-gradient-to-r from-gray-50 to-white p-6 md:p-8 rounded-2xl border border-blue-50 shadow-sm relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-blue-50 rounded-full opacity-50 border-[10px] border-white"></div>

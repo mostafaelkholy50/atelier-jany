@@ -160,6 +160,14 @@
                                         </div>
                                     </div>
                                     
+                                    <!-- Notes -->
+                                    <div class="mt-2 shrink-0">
+                                        <label class="block text-sm font-bold text-gray-700 mb-2">ملاحظات إضافية (اختياري)</label>
+                                        <textarea :name="'items['+itemIndex+'][notes]'" x-model="item.notes" rows="2"
+                                            class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition py-3 shadow-sm font-medium focus:bg-white bg-gray-50/50"
+                                            placeholder="اكتبي أي تفاصيل أو ملاحظات خاصة بالقطعة دي هنا..."></textarea>
+                                    </div>
+                                    
                                     <!-- Payment details for item -->
                                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6 border-t border-gray-100 shrink-0">
                                         <div>
@@ -252,7 +260,7 @@
 
                     <div class="flex justify-center">
                         <button type="submit" class="w-full md:w-2/3 lg:w-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-5 rounded-2xl font-black shadow-[0_10px_25px_rgba(37,99,235,0.3)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 text-xl border border-blue-400">
-                            <span>حفظ الطلب بالكامل واعتماده</span>
+                            <span>حفظ الطلب بالكامل </span>
                             <span class="text-2xl">🚀</span>
                         </button>
                     </div>
@@ -280,6 +288,7 @@
                         totalPrice: '',
                         deposit: '',
                         imagePreview: null,
+                        notes: '',
                     }
                 ],
 
@@ -316,6 +325,7 @@
                         totalPrice: '',
                         deposit: '',
                         imagePreview: null,
+                        notes: '',
                     });
                 },
 

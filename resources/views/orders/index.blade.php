@@ -83,10 +83,12 @@
                                         ? ['label' => '✅ تم التسليم', 'class' => 'bg-green-100 text-green-700 border-green-200']
                                         : ['label' => '🔄 جاري', 'class' => 'bg-yellow-50 text-yellow-700 border-yellow-200']);
                             @endphp
-                            <tr class="border-b transition group {{ $rowBg }}" x-data="orderRow({{ $order->id }}, '{{ $order->status }}', {{ $order->is_fully_paid ? 'true' : 'false' }}, {{ $order->total_price ?? 0 }}, {{ $order->deposit ?? 0 }})">
+                            <tr class="border-b transition group" :class="isDelivered ? 'bg-green-50/60 border-green-100' : '{{ $rowBg }}'" x-data="orderRow({{ $order->id }}, '{{ $order->status }}', {{ $order->is_fully_paid ? 'true' : 'false' }}, {{ $order->total_price ?? 0 }}, {{ $order->deposit ?? 0 }})">
                                 <td class="py-4 px-3 font-bold text-blue-800">
                                     <div class="flex items-center gap-2">
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border" 
+                                              :class="isDelivered ? 'bg-green-100 text-green-700 border-green-200' : '{{ $statusBadge['class'] }}'"
+                                              x-text="isDelivered ? '✅ تم التسليم' : '{{ $statusBadge['label'] }}'"></span>
                                         <a href="{{ route('orders.show', $order) }}" class="hover:underline flex items-center gap-1.5 focus:outline-none focus:text-blue-600 transition bg-blue-50 px-2 py-1 rounded-lg border border-blue-100 shadow-sm w-fit">
                                             #{{ $order->order_code }}
                                         </a>
@@ -115,7 +117,7 @@
                                 </td>
                                 <td class="py-4 px-3">
                                     <div class="text-[11px] text-gray-500 mb-1 flex justify-between gap-2 max-w-[120px]">
-                                        <span>البروفة:</span> 
+                                        <span>الاستلام:</span> 
                                         <span class="font-bold text-gray-700">{{ $order->order_date ? \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') : '-' }}</span>
                                     </div>
                                     <div class="text-[11px] flex justify-between gap-2 max-w-[120px] {{ \Carbon\Carbon::parse($order->delivery_date)->isPast() && $order->status != 'completed' ? 'text-red-500 font-bold bg-red-50 px-1 rounded' : 'text-gray-500' }}">
@@ -136,7 +138,7 @@
                                 <td class="py-4 px-3 text-center">
                                      <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
                                         <input type="checkbox" x-model="isDelivered" @change="toggleDelivered()" class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition shadow-sm" :disabled="loading">
-                                        <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isDelivered ? 'text-blue-700' : 'text-gray-500'" x-text="isDelivered ? 'مكتمل' : 'جاري'"></span>
+                                        <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isDelivered ? 'text-green-700' : 'text-gray-500'" x-text="isDelivered ? 'تم التسليم' : 'جاري التنفيذ'"></span>
                                      </label>
                                 </td>
                                 <td class="py-4 px-3">
@@ -165,7 +167,7 @@
                 <!-- Mobile & Tablet Cards View (1 Column Always for breathing room) -->
                 <div class="grid grid-cols-1 lg:hidden gap-5 w-full">
                     @foreach ($orders as $order)
-                        <div class="border rounded-2xl p-4 shadow-sm relative {{ $cardBg }}" x-data="orderRow({{ $order->id }}, '{{ $order->status }}', {{ $order->is_fully_paid ? 'true' : 'false' }}, {{ $order->total_price ?? 0 }}, {{ $order->deposit ?? 0 }})">
+                        <div class="border rounded-2xl p-4 shadow-sm relative transition-colors" :class="isDelivered ? 'bg-green-50 border-green-200' : '{{ $cardBg }}'" x-data="orderRow({{ $order->id }}, '{{ $order->status }}', {{ $order->is_fully_paid ? 'true' : 'false' }}, {{ $order->total_price ?? 0 }}, {{ $order->deposit ?? 0 }})">
                             <div class="flex justify-between items-start mb-3 border-b pb-3 {{ $isOverdue ? 'border-red-100' : ($isCompleted ? 'border-green-100' : 'border-gray-50') }}">
                                 <a href="{{ route('orders.show', $order) }}" class="flex items-center gap-3 w-full">
                                     @if($order->client->image)
@@ -182,7 +184,9 @@
                                         </div>
                                         <div class="flex items-center gap-2 mt-1">
                                             <div class="text-xs text-blue-700 font-bold">#{{ $order->order_code }}</div>
-                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border"
+                                                  :class="isDelivered ? 'bg-green-100 text-green-700 border-green-200' : '{{ $statusBadge['class'] }}'"
+                                                  x-text="isDelivered ? '✅ تم التسليم' : '{{ $statusBadge['label'] }}'"></span>
                                         </div>
                                     </div>
                                 </a>
@@ -198,7 +202,7 @@
                                     <div class="text-[10px] text-gray-500 font-bold" x-text="'مدفوع: ' + deposit + ' ج.'"></div>
                                 </div>
                                 <div>
-                                    <div class="text-[10px] text-gray-400 font-bold mb-0.5">البروفة:</div>
+                                    <div class="text-[10px] text-gray-400 font-bold mb-0.5">الاستلام    :</div>
                                     <div class="text-xs font-bold text-gray-700">{{ $order->order_date ? \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') : '-' }}</div>
                                 </div>
                                 <div class="text-left">
@@ -216,7 +220,7 @@
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50">
                                     <input type="checkbox" x-model="isDelivered" @change="toggleDelivered()" class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500" :disabled="loading">
-                                    <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isDelivered ? 'text-blue-700' : 'text-gray-500'" x-text="isDelivered ? 'مكتمل' : 'جاري'"></span>
+                                    <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isDelivered ? 'text-green-700' : 'text-gray-500'" x-text="isDelivered ? 'تم التسليم' : 'جاري التنفيذ'"></span>
                                 </label>
                             </div>
 

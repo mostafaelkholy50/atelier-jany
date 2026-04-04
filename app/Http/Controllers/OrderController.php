@@ -45,6 +45,7 @@ class OrderController extends Controller
             'items.*.design_image' => 'nullable|image|max:2048',
             'items.*.total_price' => 'required|numeric',
             'items.*.deposit' => 'nullable|numeric',
+            'items.*.notes' => 'nullable|string',
             'order_date' => 'required|date',
             'delivery_date' => 'required|date',
         ]);
@@ -92,6 +93,7 @@ class OrderController extends Controller
                 'order_date' => $validated['order_date'],
                 'delivery_date' => $validated['delivery_date'],
                 'status' => 'pending',
+                'notes' => $itemData['notes'] ?? null,
             ]);
         }
 
@@ -125,6 +127,7 @@ class OrderController extends Controller
             'order_date' => 'required|date',
             'delivery_date' => 'required|date',
             'status' => 'required|string',
+            'notes' => 'nullable|string',
         ]);
 
         if ($request->hasFile('design_image')) {
