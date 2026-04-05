@@ -10,7 +10,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Order::with(['client', 'itemCategory'])->latest();
+        $query = Order::with(['client', 'itemCategory'])->orderBy('order_date', 'desc')->latest();
 
         if ($request->filled('search')) {
             $search = $request->search;

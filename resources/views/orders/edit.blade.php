@@ -171,7 +171,7 @@
                             </div>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <label class="block text-sm font-semibold text-gray-700 mb-3 text-center">تاريخ البروفة</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3 text-center">تاريخ الاستلام</label>
                             <input type="date" name="order_date" required value="{{ $order->order_date ? \Carbon\Carbon::parse($order->order_date)->format('Y-m-d') : date('Y-m-d') }}"
                                 class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-center font-bold text-gray-700 shadow-sm text-sm">
                         </div>

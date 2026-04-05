@@ -83,7 +83,7 @@
                                 <input type="date" name="order_date" required value="{{ old('order_date', date('Y-m-d')) }}"
                                     class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-gray-600 @error('order_date') border-red-500 bg-red-50 @enderror">
                                 @error('order_date')
-                                    <p class="text-red-600 text-[10px] mt-1 font-black leading-tight">⚠️ تاريخ الاستلام مهم جداً</p>
+                                    <p class="text-red-600 text-xs mt-2 font-black flex items-center gap-1 animate-pulse">⚠️ تاريخ الاستلام مهم جداً</p>
                                 @enderror
                             </div>
                             <div>
@@ -91,7 +91,7 @@
                                 <input type="date" name="delivery_date" required value="{{ old('delivery_date') }}"
                                     class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-indigo-700 bg-white @error('delivery_date') border-red-500 bg-red-50 @enderror">
                                 @error('delivery_date')
-                                    <p class="text-red-600 text-[10px] mt-1 font-black leading-tight">⚠️ لازم تحددي موعد التسليم</p>
+                                    <p class="text-red-600 text-xs mt-2 font-black flex items-center gap-1 animate-pulse">⚠️ لازم تحددي موعد التسليم</p>
                                 @enderror
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                                                 @endforeach
                                             </select>
                                             <template x-if="getError('items.'+itemIndex+'.item_category_id')">
-                                                <p class="text-red-600 text-[10px] mt-1 font-black" x-text="'⚠️ لازم تختاري نوع القطعة هنا'"></p>
+                                                <p class="text-red-600 text-xs mt-2 font-black flex items-center gap-1 animate-pulse" x-text="'⚠️ لازم تختاري نوع القطعة هنا'"></p>
                                             </template>
                                         </div>
                                         <div>
@@ -194,7 +194,7 @@
                                                 <span class="absolute left-4 top-3.5 text-gray-400 text-sm font-bold">ج.م</span>
                                             </div>
                                             <template x-if="getError('items.'+itemIndex+'.total_price')">
-                                                <p class="text-red-600 text-[10px] mt-1 font-black" x-text="'⚠️ لازم تكتبي السعر هنا'"></p>
+                                                <p class="text-red-600 text-xs mt-2 font-black flex items-center gap-1 animate-pulse" x-text="'⚠️ لازم تكتبي السعر هنا'"></p>
                                             </template>
                                         </div>
                                         <div>
