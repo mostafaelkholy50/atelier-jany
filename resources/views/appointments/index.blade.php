@@ -44,7 +44,7 @@
         {{-- ========= WEEK NAVIGATION ========= --}}
         <div class="glass-card p-4 flex items-center justify-between gap-3">
             <a href="{{ route('appointments.index', ['week' => $weekOffset - 1]) }}"
-               class="flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition shadow-sm whitespace-nowrap">
+               class="flex items-center gap-1 px-2.5 py-2 md:px-4 md:py-2.5 bg-white border border-gray-200 rounded-xl text-xs md:text-sm font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition shadow-sm whitespace-nowrap">
                 &#8594; السابق
             </a>
 
@@ -54,9 +54,9 @@
                 </div>
                 <div class="text-xs mt-0.5 font-bold
                     {{ $weekOffset === 0 ? 'text-blue-500' : ($weekOffset < 0 ? 'text-gray-400' : 'text-amber-500') }}">
-                    @if($weekOffset === 0) النهارده وال 6 أيام القادمة
-                    @elseif($weekOffset < 0) {{ abs($weekOffset) }} {{ abs($weekOffset) === 1 ? 'أسبوع مضى' : 'أسابيع مضت' }}
-                    @else {{ $weekOffset }} {{ $weekOffset === 1 ? 'أسبوع من الآن' : 'أسابيع من الآن' }}
+                    @if($weekOffset === 0) النهارده ولباقي الأسبوع 🗓️
+                    @elseif($weekOffset < 0) منذ {{ abs($weekOffset) }} {{ abs($weekOffset) === 1 ? 'أسبوع' : 'أسابيع' }}
+                    @else بعد {{ $weekOffset }} {{ $weekOffset === 1 ? 'أسبوع' : 'أسابيع' }}
                     @endif
                 </div>
             </div>
@@ -69,7 +69,7 @@
                     </a>
                 @endif
                 <a href="{{ route('appointments.index', ['week' => $weekOffset + 1]) }}"
-                   class="flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition shadow-sm whitespace-nowrap">
+                   class="flex items-center gap-1 px-2.5 py-2 md:px-4 md:py-2.5 bg-white border border-gray-200 rounded-xl text-xs md:text-sm font-bold text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition shadow-sm whitespace-nowrap">
                     القادم &#8592;
                 </a>
             </div>

@@ -37,7 +37,7 @@
                 </div>
             @endif
 
-            <div class="p-6 md:p-8">
+            <div class="p-4 md:p-8">
                 <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
 
                     {{-- Avatar --}}
@@ -126,7 +126,7 @@
                 </h3>
                 <div class="flex flex-wrap gap-3">
                     @foreach($measurements as $name => $value)
-                        <div class="bg-white border-2 border-gray-100 hover:border-blue-200 px-4 py-3 rounded-2xl flex flex-col items-center gap-1 min-w-[90px] shadow-sm transition hover:-translate-y-0.5">
+                        <div class="bg-white border-2 border-gray-100 hover:border-blue-200 px-3 py-2 md:px-4 md:py-3 rounded-2xl flex flex-col items-center gap-1 min-w-[85px] shadow-sm transition hover:-translate-y-0.5">
                             <span class="text-gray-400 text-[11px] font-bold">{{ $name }}</span>
                             <span class="text-indigo-800 font-black text-lg">{{ $value ?: '-' }}</span>
                         </div>

@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto space-y-8 px-2 sm:px-0">
                 
                 <!-- Client Details Background Card -->
-                <div class="glass-card p-6 md:p-8 shadow-sm">
+                <div class="glass-card p-4 md:p-8 shadow-sm">
                     <h3 class="text-lg font-black text-blue-900 mb-6 flex items-center gap-2 border-b border-blue-50 pb-4">
                         <span class="bg-blue-100 text-blue-600 p-2 rounded-lg">👤</span> بيانات العميلة
                     </h3>
@@ -77,7 +77,7 @@
                         </div>
 
                         <!-- Global Dates inside Client Section -->
-                        <div class="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                        <div class="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 p-4 md:p-6 bg-gray-50 rounded-2xl border border-gray-100">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><span>📅</span> تاريخ الاستلام (تاريخ إضافة الطلب)</label>
                                 <input type="date" name="order_date" required value="{{ old('order_date', date('Y-m-d')) }}"
@@ -123,7 +123,7 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
                                 
                                 <!-- Left side (Data) -->
-                                <div class="lg:col-span-8 p-6 md:p-8 space-y-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-l border-gray-100">
+                                <div class="lg:col-span-8 p-4 md:p-8 space-y-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-l border-gray-100">
                                     
                                     <!-- Category & Fabric -->
                                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white shrink-0">
@@ -209,7 +209,7 @@
                                 </div>
 
                                 <!-- Right side (Image Upload) -->
-                                <div class="lg:col-span-4 p-6 md:p-8 flex flex-col bg-gray-50/30">
+                                <div class="lg:col-span-4 p-4 md:p-8 flex flex-col bg-gray-50/30">
                                     <h3 class="text-sm font-bold text-gray-600 mb-4 text-center">صورة التصميم أو الموديل</h3>
                                     <div class="relative group cursor-pointer overflow-hidden rounded-2xl bg-white border-2 border-dashed border-gray-300 hover:border-blue-400 transition-all flex-1 min-h-[250px] shadow-sm">
                                         <template x-if="item.imagePreview">
@@ -259,7 +259,7 @@
                 </div>
 
                 <!-- Grand Total & Submit -->
-                <div class="glass-card p-6 md:p-10 border-t-4 border-blue-500">
+                <div class="glass-card p-4 md:p-10 border-t-4 border-blue-500">
                     <h3 class="text-xl font-black text-blue-900 mb-6 text-center lg:text-right">إجمالي الفاتورة للعميلة بأكملها</h3>
                     
                     <div class="flex flex-col lg:flex-row justify-between items-stretch text-lg gap-4 bg-gray-50 rounded-2xl border border-gray-200 mb-8 overflow-hidden shadow-inner">

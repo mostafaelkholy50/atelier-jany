@@ -11,7 +11,7 @@
             
             <!-- Add / Edit Form (Right side visually because of RTL) -->
             <div class="lg:col-span-4 order-1">
-                <div class="glass-card p-6 sticky top-24 transition-all duration-300" :class="isEdit ? 'ring-2 ring-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : ''">
+                <div class="glass-card p-4 md:p-6 lg:sticky lg:top-24 transition-all duration-300" :class="isEdit ? 'ring-2 ring-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : ''">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-bold text-lg" :class="isEdit ? 'text-blue-700' : 'text-gray-800'" x-text="isEdit ? '📝 تعديل موديل' : '✨ إضافة موديل جديد'"></h3>
                         
@@ -63,7 +63,7 @@
 
             <!-- Categories Grid (Left side visually) -->
             <div class="lg:col-span-8 order-2">
-                <div class="glass-card p-6 min-h-[500px]">
+                <div class="glass-card p-4 md:p-6 min-h-[500px]">
                     <h3 class="font-bold text-gray-800 mb-6 text-lg">الموديلات المسجلة بالمكتبة</h3>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5">

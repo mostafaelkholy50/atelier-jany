@@ -333,7 +333,7 @@
             -webkit-backdrop-filter: blur(16px) saturate(1.3);
             border-bottom: 1px solid rgba(180, 215, 240, 0.35);
             box-shadow: 0 4px 20px rgba(74, 144, 196, 0.06);
-            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .topbar-title {
@@ -395,6 +395,25 @@
 
         .main-content {
             padding: 28px 32px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px 12px;
+            }
+            .topbar {
+                padding: 0 16px;
+                right: 0 !important;
+            }
+            .topbar-title {
+                font-size: 1.15rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .topbar-title {
+                font-size: 1rem;
+            }
         }
 
         .floating-petal {

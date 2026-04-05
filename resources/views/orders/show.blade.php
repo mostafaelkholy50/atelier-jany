@@ -16,7 +16,7 @@
             <!-- Middle/Right Column: Details -->
             <div class="lg:col-span-8 space-y-6">
                 <!-- Client Info -->
-                <div class="glass-card p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-6 hover:shadow-md transition">
+                <div class="glass-card p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center gap-4 sm:gap-6 hover:shadow-md transition">
                     @if($order->client->image)
                         <img src="{{ asset('app-storage/' . $order->client->image) }}" 
                              onclick="openImageModal(this.src)"
@@ -118,7 +118,7 @@
                     <div class="flex flex-wrap gap-4 relative z-10">
                         @if(is_array($order->measurements) && count($order->measurements) > 0)
                             @foreach($order->measurements as $name => $value)
-                                <div class="bg-white border-2 border-gray-100 hover:border-blue-200 hover:shadow-md px-4 py-3 rounded-2xl flex flex-col items-center gap-1 min-w-[110px] transition-all transform hover:-translate-y-1">
+                                <div class="bg-white border-2 border-gray-100 hover:border-blue-200 hover:shadow-md px-3 py-2 md:px-4 md:py-3 rounded-2xl flex flex-col items-center gap-1 min-w-[100px] flex-1 transition-all transform hover:-translate-y-1">
                                     <span class="text-gray-500 text-xs font-bold">{{ $name }}</span>
                                     <span class="text-indigo-800 font-black text-xl">{{ $value ?: '-' }}</span>
                                 </div>
@@ -136,7 +136,7 @@
             <!-- Left Column: Image & Financials -->
             <div class="lg:col-span-4 space-y-6 flex flex-col">
                 <!-- Image -->
-                <div class="glass-card p-3 rounded-2xl border border-gray-100 shadow-sm h-80 lg:h-96 w-full relative group overflow-hidden bg-white">
+                <div class="glass-card p-3 rounded-2xl border border-gray-100 shadow-sm h-auto min-h-[320px] lg:h-96 w-full relative group overflow-hidden bg-white">
                     @if($order->design_image)
                         <div onclick="openImageModal('{{ asset('app-storage/' . $order->design_image) }}')" 
                              class="block w-full h-full relative cursor-zoom-in" title="اضغط لتكبير الصورة">
