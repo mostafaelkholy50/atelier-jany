@@ -9,7 +9,7 @@
     </x-slot>
 
     <div class="py-6 max-w-xl mx-auto" x-data="clientForm()">
-        <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
             <div class="glass-card p-6 md:p-8 space-y-6">
 
@@ -37,18 +37,24 @@
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">اسم العميلة <span class="text-red-500">*</span></label>
                     <input type="text" name="name" value="{{ old('name') }}" required
-                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition"
+                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition @error('name') border-red-500 bg-red-50 @enderror"
                         placeholder="مثلاً: فاطمة أحمد...">
-                    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('name') 
+                        <p class="text-red-700 text-xs mt-2 font-black animate-pulse flex items-center gap-1">
+                            <span>⚠️</span> لازم تكتبي اسم العميلة هنا!
+                        </p> 
+                    @enderror
                 </div>
 
                 {{-- Phone --}}
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2">رقم التليفون <span class="text-gray-400 font-normal">(اختياري)</span></label>
                     <input type="text" name="phone" value="{{ old('phone') }}"
-                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition"
+                        class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition @error('phone') border-red-500 bg-red-50 @enderror"
                         placeholder="01xxxxxxxxx">
-                    @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('phone') 
+                        <p class="text-red-700 text-[10px] mt-1 font-black">⚠️ رقم موبايل غير صحيح أو مكرر</p> 
+                    @enderror
                 </div>
 
                 {{-- Is Traveler --}}

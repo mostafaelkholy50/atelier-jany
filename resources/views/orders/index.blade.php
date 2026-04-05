@@ -131,9 +131,9 @@
                                 </td>
                                 <td class="py-4 px-3 text-center">
                                     <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
-                                        <input type="checkbox" x-model="isPaid" @change="togglePaid()" class="w-4 h-4 text-green-500 bg-white border-gray-300 rounded focus:ring-green-400 focus:ring-2 transition shadow-sm" :disabled="isPaid || loading">
-                                        <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isPaid ? 'text-green-600' : 'text-orange-500'" x-text="isPaid ? 'خالص' : 'متبقي'"></span>
-                                    </label>
+                                    <input type="checkbox" x-model="isPaid" @change="togglePaid()" class="w-4 h-4 text-green-500 bg-white border-gray-300 rounded focus:ring-green-400 focus:ring-2 transition shadow-sm" :disabled="loading">
+                                    <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isPaid ? 'text-green-600' : 'text-orange-500'" x-text="isPaid ? 'خالص' : 'متبقي'"></span>
+                                </label>
                                 </td>
                                 <td class="py-4 px-3 text-center">
                                      <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
@@ -215,7 +215,7 @@
                             
                             <div class="flex items-center justify-between border-t border-gray-50 pt-3 mb-3 px-1">
                                 <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50">
-                                    <input type="checkbox" x-model="isPaid" @change="togglePaid()" class="w-4 h-4 text-green-500 bg-white border-gray-300 rounded focus:ring-green-400" :disabled="isPaid || loading">
+                                    <input type="checkbox" x-model="isPaid" @change="togglePaid()" class="w-4 h-4 text-green-500 bg-white border-gray-300 rounded focus:ring-green-400" :disabled="loading">
                                     <span class="ml-1 text-[11px] font-bold mr-1.5" :class="isPaid ? 'text-green-600' : 'text-orange-500'" x-text="isPaid ? 'خالص' : 'متبقي'"></span>
                                 </label>
                                 <label class="inline-flex items-center cursor-pointer p-1 rounded-lg hover:bg-gray-50">
@@ -369,46 +369,44 @@
                 },
 
                 togglePaid() {
+                    const originalPaid = !this.isPaid;
+                    const originalDeposit = this.deposit;
+
+                    // If turning to Paid, confirm if it's not already full price
                     if (this.isPaid && this.deposit !== this.totalPrice) {
                         if (!confirm('العميلة دفعت الحساب بالكامل؟ (المدفوع هيبقا ' + this.totalPrice + ' ج.م)')) {
                             this.isPaid = false;
                             return;
                         }
-                        const originalPaid = false;
-                        const originalDeposit = this.deposit;
-                        this.loading = true;
-                        
-                        fetch(`/orders/${this.id}/toggle`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                is_fully_paid: true
-                            })
-                        }).then(res => {
-                            this.loading = false;
-                            if (res.ok) {
-                                this.deposit = this.totalPrice; // update visually
-                                // Update global window data so modal sees changes
-                                let updatedOrder = window.ordersData.find(o => o.id === this.id);
-                                if(updatedOrder) {
-                                    updatedOrder.deposit = this.deposit;
-                                    updatedOrder.is_fully_paid = true;
-                                }
-                            } else {
-                                this.isPaid = originalPaid;
-                                this.deposit = originalDeposit;
-                                alert('حصل مشكلة، حاولي تاني.');
+                    }
+
+                    this.loading = true;
+                    fetch(`/orders/${this.id}/toggle`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            is_fully_paid: this.isPaid
+                        })
+                    }).then(res => {
+                        this.loading = false;
+                        if (res.ok) {
+                            if (this.isPaid) {
+                                this.deposit = this.totalPrice; 
                             }
-                        }).catch(() => {
-                            this.loading = false;
+                        } else {
                             this.isPaid = originalPaid;
                             this.deposit = originalDeposit;
-                        });
-                    }
+                            alert('حصل مشكلة، حاولي تاني.');
+                        }
+                    }).catch(() => {
+                        this.loading = false;
+                        this.isPaid = originalPaid;
+                        this.deposit = originalDeposit;
+                    });
                 }
             }
         }

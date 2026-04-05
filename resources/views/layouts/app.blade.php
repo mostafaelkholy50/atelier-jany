@@ -626,6 +626,8 @@
 
     <div class="main-wrapper">
         <main class="main-content fade-in">
+            <x-success-alert />
+            <x-validation-errors />
             {{ $slot }}
         </main>
     </div>

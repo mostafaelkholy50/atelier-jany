@@ -97,7 +97,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return redirect()->route('orders.index');
+        return redirect()->route('orders.index')->with('success', 'تم إضافة الطلب بنجاح! تقدري تشوفيه في الجدول دلوقتي.');
     }
 
     public function show(Order $order)
@@ -140,13 +140,13 @@ class OrderController extends Controller
         $order->update($validated);
         $order->client->update(['is_traveler' => $request->boolean('is_traveler')]);
 
-        return redirect()->route('orders.index');
+        return redirect()->route('orders.index')->with('success', 'تم تحديث بيانات الطلب بنجاح.');
     }
 
     public function destroy(Order $order)
     {
         $order->delete();
-        return redirect()->route('orders.index');
+        return redirect()->route('orders.index')->with('success', 'تم حذف الطلب بنجاح.');
     }
 
     public function toggleStatus(Request $request, Order $order)
@@ -154,9 +154,20 @@ class OrderController extends Controller
         if ($request->has('status')) {
             $order->status = $request->status; // e.g., 'completed' or 'pending'
         }
-        if ($request->has('is_fully_paid') && $request->is_fully_paid) {
-            $order->deposit = $order->total_price;
-            $order->is_fully_paid = true;
+        if ($request->has('is_fully_paid')) {
+            $order->is_fully_paid = $request->boolean('is_fully_paid');
+            // If toggling back to Remaining, we don't automatically clear current deposit, 
+            // but we ensure is_fully_paid is false. 
+            // If toggling to Paid, we match deposit to total_price.
+            if ($order->is_fully_paid) {
+                $order->deposit = $order->total_price;
+            } else {
+                // If they untick "Paid", it means they don't want it marked as "Paid" anymore.
+                // We shouldn't necessarily zero out the deposit (they might have paid PART of it), 
+                // but the UI currently ONLY allows toggling to "Full". 
+                // Let's just set it to false and let them edit it in the edit page if they want specific values.
+                // Or we can keep the current deposit but mark is_fully_paid = false.
+            }
         }
         $order->save();
 

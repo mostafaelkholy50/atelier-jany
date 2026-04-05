@@ -3,8 +3,8 @@
         <span class="font-bold text-xl text-blue-900">إضافة طلب جديد ✦</span>
     </x-slot>
 
-    <div class="py-8" x-data="orderForm()">
-        <form action="{{ route('orders.store') }}" method="POST" enctype="multipart/form-data">
+    <div class="py-8" x-data="orderForm()" @submit="isSaving = true">
+        <form action="{{ route('orders.store') }}" method="POST" enctype="multipart/form-data" novalidate>
             @csrf
             
             <div class="max-w-7xl mx-auto space-y-8 px-2 sm:px-0">
@@ -19,8 +19,13 @@
                         <div class="relative z-40">
                             <label class="block text-sm font-bold text-gray-700 mb-2">اسم العميلة</label>
                             <input type="text" name="name" x-model="clientSearch" @input="searchClient" required
-                                class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition py-3 shadow-sm font-medium"
+                                class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition py-3 shadow-sm font-medium @error('name') border-red-500 bg-red-50 @enderror"
                                 placeholder="ابحثي أو اكتبي اسم جديد..." autocomplete="off">
+                            @error('name')
+                                <p class="text-red-600 text-xs mt-2 font-black flex items-center gap-1 animate-pulse">
+                                    <span>⚠️</span> اسم العميلة مطلوب يا ست الكل
+                                </p>
+                            @enderror
 
                             <div x-show="showSuggestions" @click.away="showSuggestions = false" class="absolute w-full bg-white mt-2 rounded-xl shadow-2xl border border-gray-100 max-h-60 overflow-y-auto z-50">
                                 <template x-for="client in filteredClients" :key="client.id">
@@ -75,13 +80,19 @@
                         <div class="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 p-6 bg-gray-50 rounded-2xl border border-gray-100">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><span>📅</span> تاريخ الاستلام (تاريخ إضافة الطلب)</label>
-                                <input type="date" name="order_date" required value="{{ date('Y-m-d') }}"
-                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-gray-600">
+                                <input type="date" name="order_date" required value="{{ old('order_date', date('Y-m-d')) }}"
+                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-gray-600 @error('order_date') border-red-500 bg-red-50 @enderror">
+                                @error('order_date')
+                                    <p class="text-red-600 text-[10px] mt-1 font-black leading-tight">⚠️ تاريخ الاستلام مهم جداً</p>
+                                @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><span>🎯</span> موعد التسليم النهائي لهذه الطلبات</label>
-                                <input type="date" name="delivery_date" required
-                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-indigo-700 bg-white">
+                                <input type="date" name="delivery_date" required value="{{ old('delivery_date') }}"
+                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring focus:ring-blue-100 transition py-3 text-sm shadow-sm font-bold text-indigo-700 bg-white @error('delivery_date') border-red-500 bg-red-50 @enderror">
+                                @error('delivery_date')
+                                    <p class="text-red-600 text-[10px] mt-1 font-black leading-tight">⚠️ لازم تحددي موعد التسليم</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -119,12 +130,16 @@
                                         <div>
                                             <label class="block text-sm font-bold text-gray-700 mb-2">نوع القطعة</label>
                                             <select :name="'items['+itemIndex+'][item_category_id]'" x-model="item.selectedCategory" @change="fetchMeasurements(itemIndex)" required
-                                                class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition shadow-sm py-3 font-medium bg-gray-50">
+                                                class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition shadow-sm py-3 font-medium bg-gray-50"
+                                                :class="getError('items.'+itemIndex+'.item_category_id') ? 'border-red-500 bg-red-50' : ''">
                                                 <option value="">اختاري النوع...</option>
                                                 @foreach($categories as $cat)
                                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                                                 @endforeach
                                             </select>
+                                            <template x-if="getError('items.'+itemIndex+'.item_category_id')">
+                                                <p class="text-red-600 text-[10px] mt-1 font-black" x-text="'⚠️ لازم تختاري نوع القطعة هنا'"></p>
+                                            </template>
                                         </div>
                                         <div>
                                             <label class="block text-sm font-bold text-gray-700 mb-2">لون القماش</label>
@@ -148,7 +163,7 @@
                                                 <div class="relative group bg-white rounded-xl p-2 border border-indigo-100 hover:border-indigo-300 transition shadow-sm">
                                                     <label class="block text-xs font-bold text-gray-600 mb-1 text-center" x-text="m.name"></label>
                                                     <button type="button" @click="removeMeasurement(itemIndex, mIndex)" class="absolute -left-2 -top-2 text-white bg-red-400 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">&times;</button>
-                                                    <input type="text" :name="'items['+itemIndex+'][measurements]['+m.name+']'"
+                                                    <input type="text" :name="'items['+itemIndex+'][measurements]['+m.name+']'" x-model="m.value"
                                                         class="w-full border-0 focus:ring-0 text-center text-sm p-1 font-bold text-indigo-900 bg-transparent placeholder-gray-300" placeholder="0">
                                                 </div>
                                             </template>
@@ -174,9 +189,13 @@
                                             <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">إجمالي هذه القطعة</label>
                                             <div class="relative">
                                                 <input type="number" :name="'items['+itemIndex+'][total_price]'" x-model.number="item.totalPrice" required
-                                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-10 pr-4 py-3 shadow-sm font-black text-blue-900 bg-blue-50/30 text-lg">
+                                                    class="w-full rounded-xl border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition pl-10 pr-4 py-3 shadow-sm font-black text-blue-900 bg-blue-50/30 text-lg"
+                                                    :class="getError('items.'+itemIndex+'.total_price') ? 'border-red-500 bg-red-50' : ''">
                                                 <span class="absolute left-4 top-3.5 text-gray-400 text-sm font-bold">ج.م</span>
                                             </div>
+                                            <template x-if="getError('items.'+itemIndex+'.total_price')">
+                                                <p class="text-red-600 text-[10px] mt-1 font-black" x-text="'⚠️ لازم تكتبي السعر هنا'"></p>
+                                            </template>
                                         </div>
                                         <div>
                                             <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">المدفوع من حسابها (اختياري)</label>
@@ -259,9 +278,11 @@
                     </div>
 
                     <div class="flex justify-center">
-                        <button type="submit" class="w-full md:w-2/3 lg:w-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-5 rounded-2xl font-black shadow-[0_10px_25px_rgba(37,99,235,0.3)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 text-xl border border-blue-400">
-                            <span>حفظ الطلب بالكامل </span>
-                            <span class="text-2xl">🚀</span>
+                        <button type="submit" :disabled="isSaving" 
+                            class="w-full md:w-2/3 lg:w-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-5 rounded-2xl font-black shadow-[0_10px_25px_rgba(37,99,235,0.3)] transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 text-xl border border-blue-400 disabled:opacity-75 disabled:cursor-not-allowed">
+                            <span x-show="!isSaving">حفظ الطلب بالكامل </span>
+                            <span x-show="isSaving">جاري الحفظ.. خليكي مكانك ⏳</span>
+                            <span class="text-2xl" x-show="!isSaving">🚀</span>
                         </button>
                     </div>
                 </div>
@@ -272,14 +293,20 @@
     <script>
         function orderForm() {
             return {
-                clientSearch: '',
-                clientPhone: '',
+                clientSearch: '{{ old('name', '') }}',
+                clientPhone: '{{ old('phone', '') }}',
                 clients: @json($clients),
                 filteredClients: [],
                 showSuggestions: false,
-                isTraveler: false,
+                isTraveler: {{ old('is_traveler') ? 'true' : 'false' }},
+                isSaving: false,
+                laravelErrors: @json($errors->getMessages()),
 
-                items: [
+                getError(field) {
+                    return this.laravelErrors[field] ? this.laravelErrors[field][0] : null;
+                },
+
+                items: @json(old('items')) || [
                     {
                         id: Date.now(),
                         selectedCategory: '',
@@ -291,6 +318,34 @@
                         notes: '',
                     }
                 ],
+
+                init() {
+                    // Ensure each item has an id and proper structure if coming from old()
+                    this.items = this.items.map((item, idx) => {
+                        if (!item.id) item.id = Date.now() + idx;
+                        
+                        // Map internal field names if they came from Laravel old()
+                        if (item.item_category_id && !item.selectedCategory) {
+                            item.selectedCategory = item.item_category_id;
+                        }
+                        if (item.total_price && !item.totalPrice) {
+                            item.totalPrice = item.total_price;
+                        }
+
+                        // Handle measurements format if it was saved as name => value (object) from laravel old()
+                        if (item.measurements && !Array.isArray(item.measurements)) {
+                            item.measurements = Object.keys(item.measurements).map(key => ({
+                                name: key,
+                                value: item.measurements[key]
+                            }));
+                        }
+                        
+                        // Ensure it's an array if it was null
+                        if (!item.measurements) item.measurements = [];
+                        
+                        return item;
+                    });
+                },
 
                 get isNewClient() {
                     if(this.clientSearch.length < 2) return false;
